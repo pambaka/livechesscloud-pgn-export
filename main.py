@@ -1,10 +1,19 @@
+import os
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from client import LiveChessCloudClient, LiveChessCloudException
 
+ALLOWED_ORIGINS = os.environ.get(
+    "ALLOWED_ORIGINS", "http://127.0.0.1:5500"
+).split()
+
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_methods=["GET"]
+)
 
 
 @app.get("/api/tournaments/{tournament_id}")

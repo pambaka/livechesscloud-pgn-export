@@ -1,0 +1,38 @@
+body {
+  padding-top: 10vh;
+  font-family: system-ui, sans-serif;
+}
+
+form {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+input,
+button {
+  padding: 0.5rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+input {
+  max-width: 100%;
+  width: calc(37ch + 1rem + 2px);
+  font-family: monospace;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  text-transform: uppercase;
+  transition: filter 0.5s;
+}
+
+button:hover {
+  filter: brightness(0.9);
+}
