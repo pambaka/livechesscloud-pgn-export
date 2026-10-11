@@ -1,45 +1,16 @@
-import sys
-from typing import Self
+from typing import Any
 
-import requests
+from fastapi import FastAPI, HTTPException
 
-POOL_URL = "https://1.pool.livechesscloud.com"
+from client import LiveChessCloudClient, LiveChessCloudException
 
-
-class LiveChessCloudException(Exception):
-    pass
+app = FastAPI()
 
 
-class LiveChessCloudClient:
-    def __init__(self, tournament_id: str) -> None:
-        self.base_url = f"{POOL_URL}/get/{tournament_id}"
-        self.session = requests.Session()
-
-    def __enter__(self) -> Self:
-        return self
-
-    def __exit__(self, *_: object) -> None:
-        self.session.close()
-
-    def get_tournament(self) -> None:
-        response = self.session.get(
-            f"{self.base_url}/tournament.json", timeout=10
-        )
-        if response.status_code != 200:
-            raise LiveChessCloudException(
-                f"Request failed with status code: {response.status_code}"
-            )
-        data = response.json()
-        print(data)
-
-
-if __name__ == "__main__":
-    args = sys.argv
-    if len(args) != 2:
-        sys.exit("Usage: python main.py <tournament_id>")
-
+@app.get("/api/tournaments/{tournament_id}")
+def get_tournament(tournament_id: str) -> dict[str, Any]:
     try:
-        with LiveChessCloudClient(args[1]) as client:
-            client.get_tournament()
+        with LiveChessCloudClient(tournament_id) as client:
+            return client.get_tournament()
     except LiveChessCloudException as e:
-        sys.exit(str(e))
+        raise HTTPException(status_code=502, detail=str(e)) from e
