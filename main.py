@@ -1,5 +1,6 @@
 import os
 from typing import Any
+from uuid import UUID
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +18,7 @@ app.add_middleware(
 
 
 @app.get("/api/tournaments/{tournament_id}")
-def get_tournament(tournament_id: str) -> dict[str, Any]:
+def get_tournament(tournament_id: UUID) -> dict[str, Any]:
     try:
         with LiveChessCloudClient(tournament_id) as client:
             return client.get_tournament()

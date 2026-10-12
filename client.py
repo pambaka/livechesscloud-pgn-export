@@ -1,9 +1,11 @@
 import sys
 from typing import Any, Self
+from uuid import UUID
 
 import requests
 
 POOL_URL = "https://1.pool.livechesscloud.com"
+TOURNAMENT_ID_FORMAT = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 
 class LiveChessCloudException(Exception):
@@ -11,7 +13,7 @@ class LiveChessCloudException(Exception):
 
 
 class LiveChessCloudClient:
-    def __init__(self, tournament_id: str) -> None:
+    def __init__(self, tournament_id: UUID) -> None:
         self.base_url = f"{POOL_URL}/get/{tournament_id}"
         self.session = requests.Session()
 
@@ -43,10 +45,20 @@ class LiveChessCloudClient:
 if __name__ == "__main__":
     args = sys.argv
     if len(args) != 2:
-        sys.exit("Usage: python client.py <tournament_id>")
+        sys.exit(
+            "Usage: python client.py <tournament_id>\n"
+            f"Tournament ID format: {TOURNAMENT_ID_FORMAT}"
+        )
 
     try:
-        with LiveChessCloudClient(args[1]) as client:
+        tournament_id = UUID(args[1])
+    except ValueError:
+        sys.exit(
+            f"Invalid tournament ID (UUID expected: {TOURNAMENT_ID_FORMAT})"
+        )
+
+    try:
+        with LiveChessCloudClient(tournament_id) as client:
             print(client.get_tournament())
     except LiveChessCloudException as e:
         sys.exit(str(e))
