@@ -4,12 +4,18 @@ body {
 }
 
 form {
-  width: fit-content;
-  max-width: 100%;
+  width: 100%;
+  max-width: 24rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 input,
@@ -21,7 +27,6 @@ button {
 
 input {
   max-width: 100%;
-  width: calc(37ch + 1rem + 2px);
   font-family: monospace;
   box-sizing: border-box;
 }
