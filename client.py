@@ -16,6 +16,7 @@ class LiveChessCloudClient:
     def __init__(self, tournament_id: UUID) -> None:
         self.base_url = f"{POOL_URL}/get/{tournament_id}"
         self.session = requests.Session()
+        self._tournament: dict[str, Any] | None = None
 
     def __enter__(self) -> Self:
         return self
@@ -24,19 +25,38 @@ class LiveChessCloudClient:
         self.session.close()
 
     def get_tournament(self) -> dict[str, Any]:
-        response = self.session.get(
-            f"{self.base_url}/tournament.json", timeout=10
-        )
+        if self._tournament is None:
+            self._tournament = self._fetch_json("tournament.json")
+        return self._tournament
+
+    def get_rounds(self) -> list[dict[str, Any] | None]:
+        tournament = self.get_tournament()
+        round_infos: list[dict[str, Any]] = tournament.get("rounds", [])
+        rounds: list[dict[str, Any] | None] = []
+        for i, round_info in enumerate(round_infos, 1):
+            if round_info.get("count", 0) == 0:
+                rounds.append(None)
+            else:
+                rounds.append(self._fetch_json(f"round-{i}/index.json"))
+        return rounds
+
+    def _fetch_json(self, path: str) -> dict[str, Any]:
+        url = f"{self.base_url}/{path}"
+        response = self.session.get(url, timeout=10)
         if response.status_code != 200:
             raise LiveChessCloudException(
-                f"Request failed with status code: {response.status_code}"
+                f"{url}: "
+                f"Request failed with status code {response.status_code}"
             )
         try:
             data = response.json()
         except requests.JSONDecodeError as e:
-            raise LiveChessCloudException("Response is not valid JSON") from e
+            raise LiveChessCloudException(
+                f"{url}: Response is not valid JSON"
+            ) from e
         if not isinstance(data, dict):
             raise LiveChessCloudException(
+                f"{url}: "
                 f"Expected a JSON object (dict), got {type(data).__name__}"
             )
         return data

@@ -9,7 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 from client import LiveChessCloudClient, LiveChessCloudException
-
+from tournament import Tournament
 
 RATE_LIMIT = os.environ.get("RATE_LIMIT", "30/minute")
 ALLOWED_ORIGINS = os.environ.get(
@@ -34,9 +34,10 @@ app.add_middleware(
 def get_tournament(
     request: Request,  # required by slowapi
     tournament_id: UUID,
-) -> dict[str, Any]:
+) -> dict[Any, Any]:
     try:
         with LiveChessCloudClient(tournament_id) as client:
-            return client.get_tournament()
+            rounds = client.get_rounds()
+            return Tournament(rounds).get_pairings_by_round()
     except LiveChessCloudException as e:
         raise HTTPException(status_code=502, detail=str(e)) from e
