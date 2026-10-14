@@ -1,6 +1,13 @@
+[hidden] {
+  display: none !important;
+}
+
 body {
   padding-top: 10vh;
   font-family: system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
 form {
@@ -40,4 +47,48 @@ button {
 
 button:hover {
   filter: brightness(0.9);
+}
+
+#response {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rounds-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+#rounds {
+  display: flex;
+  border: 1px solid #555;
+  overflow-x: auto;
+}
+
+.round-tab {
+  border-radius: 0;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.2rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.round-tab[aria-selected="true"] {
+  background-color: #a0d8d1;
+}
+
+.round-tab + .round-tab {
+  border-left: 1px solid #999;
+}
+
+#pairs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
