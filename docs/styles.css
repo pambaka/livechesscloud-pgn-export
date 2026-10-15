@@ -10,10 +10,14 @@ body {
   gap: 40px;
 }
 
-form {
+form,
+table {
   width: 100%;
-  max-width: 24rem;
   margin: 0 auto;
+}
+
+form {
+  max-width: 24rem;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -87,8 +91,35 @@ button:hover {
   border-left: 1px solid #999;
 }
 
-#pairs {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+table {
+  max-width: 40rem;
+}
+
+tr {
+  transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+  cursor: pointer;
+  background-color: #f2f2f2;
+}
+
+tbody tr:has(input:checked) {
+  background-color: #e8f7f5;
+}
+
+tbody tr:has(input:checked):hover {
+  background-color: #cfe6e2;
+}
+
+input[type="checkbox"] {
+  accent-color: #2b7a72;
+}
+
+th {
+  text-align: left;
+}
+
+td {
+  overflow-wrap: anywhere;
 }

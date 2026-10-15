@@ -4,15 +4,25 @@ const API_BASE = isLocal
   : "https://livechesscloud-pgn-export.onrender.com";
 
 const form = document.querySelector("form");
-/**@type {HTMLInputElement} */
+/** @type {HTMLInputElement} */
 const tournamentInput = document.getElementById("tournament_id");
 const responseBlock = document.getElementById("response");
 const roundsBlock = document.getElementById("rounds");
 const pairsBlock = document.getElementById("pairs");
+/** @type {HTMLTemplateElement} */
+const rowTemplate = document.getElementById("row-template");
+/** @type {HTMLInputElement} */
+const selectAllCheckbox = document.getElementById("select-all");
 
+selectAllCheckbox.addEventListener("change", () => {
+  const checkboxes = pairsBlock.querySelectorAll("input[type=checkbox]");
+  for (const checkbox of checkboxes) {
+    checkbox.checked = selectAllCheckbox.checked;
+  }
+});
 form.addEventListener("submit", handleSubmit);
 
-/**@param {SubmitEvent} event */
+/** @param {SubmitEvent} event */
 async function handleSubmit(event) {
   event.preventDefault();
   const id = tournamentInput.value.trim();
@@ -56,14 +66,36 @@ async function handleSubmit(event) {
 function handleTabClick(event, pairings) {
   const tab = /** @type {HTMLButtonElement}*/ (event.currentTarget);
   if (tab.getAttribute("aria-selected") === "true") return;
+  selectAllCheckbox.checked = false;
   pairsBlock.replaceChildren();
   const currentTab = roundsBlock.querySelector("[aria-selected='true']");
   currentTab?.setAttribute("aria-selected", "false");
   tab.setAttribute("aria-selected", "true");
   for (const [boardNum, pairing] of Object.entries(pairings)) {
-    const pair = document.createElement("p");
-    pair.textContent =
-      boardNum + ": " + pairing["white"] + " - " + pairing["black"];
-    pairsBlock.appendChild(pair);
+    const row = createTableRow(boardNum, pairing);
+    pairsBlock.append(row);
   }
+}
+
+function createTableRow(boardNum, pairing) {
+  const row = rowTemplate.content.firstElementChild.cloneNode(true);
+  row.querySelector("th").textContent = boardNum;
+  row.querySelector(".white").textContent = pairing["white"];
+  row.querySelector(".black").textContent = pairing["black"];
+  const checkbox = row.querySelector("input");
+  checkbox.addEventListener("click", (event) => {
+    event.stopPropagation();
+    updateSelectAllChekbox();
+  });
+  row.addEventListener("click", () => {
+    checkbox.checked = !checkbox.checked;
+    updateSelectAllChekbox();
+  });
+  return row;
+}
+
+function updateSelectAllChekbox() {
+  const all = pairsBlock.querySelectorAll("input[type=checkbox]");
+  const checked = pairsBlock.querySelectorAll("input[type=checkbox]:checked");
+  selectAllCheckbox.checked = all.length > 0 && all.length === checked.length;
 }

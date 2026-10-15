@@ -25,7 +25,25 @@
         <p>Round:</p>
         <div id="rounds"></div>
       </div>
-      <div id="pairs"></div>
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="select-all"></th>
+            <th>No.</th>
+            <th>White</th>
+            <th>Black</th>
+          </tr>
+        </thead>
+        <tbody id="pairs"></tbody> 
+      </table>
     </div>
+    <template id="row-template">
+      <tr>
+        <td><input type="checkbox"></td>
+        <th></th>
+        <td class="white"></td>
+        <td class="black"></td>
+      </tr>
+    </template>
   </body>
 </html>
