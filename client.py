@@ -1,4 +1,5 @@
 import sys
+from http import HTTPStatus
 from typing import Any, Self
 from uuid import UUID
 
@@ -9,6 +10,9 @@ TOURNAMENT_ID_FORMAT = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 
 class LiveChessCloudException(Exception):
+    pass
+
+class LiveChessCloudNotFound(LiveChessCloudException):
     pass
 
 
@@ -29,6 +33,9 @@ class LiveChessCloudClient:
             self._tournament = self._fetch_json("tournament.json")
         return self._tournament
 
+    def get_round(self, round: int) -> dict[str, Any]:
+        return self._fetch_json(f"round-{round}/index.json")
+
     def get_rounds(self) -> list[dict[str, Any] | None]:
         tournament = self.get_tournament()
         round_infos: list[dict[str, Any]] = tournament.get("rounds", [])
@@ -37,13 +44,18 @@ class LiveChessCloudClient:
             if round_info.get("count", 0) == 0:
                 rounds.append(None)
             else:
-                rounds.append(self._fetch_json(f"round-{i}/index.json"))
+                rounds.append(self.get_round(i))
         return rounds
+
+    def get_game(self, round_num: int, board: int) -> dict:
+        return self._fetch_json(f"round-{round_num}/game-{board}.json")
 
     def _fetch_json(self, path: str) -> dict[str, Any]:
         url = f"{self.base_url}/{path}"
         response = self.session.get(url, timeout=10)
-        if response.status_code != 200:
+        if response.status_code == HTTPStatus.NOT_FOUND:
+            raise LiveChessCloudNotFound(f"{url}: Not found")
+        if response.status_code != HTTPStatus.OK:
             raise LiveChessCloudException(
                 f"{url}: "
                 f"Request failed with status code {response.status_code}"
