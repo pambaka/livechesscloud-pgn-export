@@ -28,18 +28,24 @@
       <table>
         <thead>
           <tr>
-            <th><input type="checkbox" id="select-all"></th>
+            <th><input type="checkbox" id="select-all" /></th>
             <th>No.</th>
             <th>White</th>
             <th>Black</th>
           </tr>
         </thead>
-        <tbody id="pairs"></tbody> 
+        <tbody id="pairs"></tbody>
       </table>
+      <div class="download-bar">
+        <div>
+          <p>Selected: <span id="counter">0</span></p>
+        </div>
+        <button id="pgn-button" disabled>Get PGN</button>
+      </div>
     </div>
     <template id="row-template">
       <tr>
-        <td><input type="checkbox"></td>
+        <td><input type="checkbox" /></td>
         <th></th>
         <td class="white"></td>
         <td class="black"></td>

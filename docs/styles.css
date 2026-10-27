@@ -1,3 +1,13 @@
+:root {
+  --accent-color: #a0d8d1;
+  --accent-color-dark: #2b7a72;
+  --accent-color-light: #e8f7f5;
+  --accent-color-light-hover: #cfe6e2;
+  --border-color: #555;
+  --border-color-light: #999;
+  --row-color-hover: #f2f2f2;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -11,7 +21,8 @@ body {
 }
 
 form,
-table {
+table,
+.download-bar {
   width: 100%;
   margin: 0 auto;
 }
@@ -32,7 +43,7 @@ form div {
 input,
 button {
   padding: 0.5rem;
-  border: 1px solid #555;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
 }
 
@@ -46,7 +57,12 @@ button {
   cursor: pointer;
   font: inherit;
   text-transform: uppercase;
-  transition: filter 0.5s;
+  transition: filter 0.2s;
+}
+
+button:disabled {
+  cursor: default;
+  filter: none;
 }
 
 button:hover {
@@ -68,7 +84,7 @@ button:hover {
 
 #rounds {
   display: flex;
-  border: 1px solid #555;
+  border: 1px solid var(--border-color);
   overflow-x: auto;
 }
 
@@ -84,11 +100,11 @@ button:hover {
 }
 
 .round-tab[aria-selected="true"] {
-  background-color: #a0d8d1;
+  background-color: var(--accent-color);
 }
 
 .round-tab + .round-tab {
-  border-left: 1px solid #999;
+  border-left: 1px solid var(--border-color-light);
 }
 
 table {
@@ -101,19 +117,20 @@ tr {
 
 tbody tr:hover {
   cursor: pointer;
-  background-color: #f2f2f2;
+  background-color: var(--row-color-hover);
 }
 
 tbody tr:has(input:checked) {
-  background-color: #e8f7f5;
+  background-color: var(--accent-color-light);
 }
 
 tbody tr:has(input:checked):hover {
-  background-color: #cfe6e2;
+  background-color: var(--accent-color-light-hover);
 }
 
 input[type="checkbox"] {
-  accent-color: #2b7a72;
+  cursor: pointer;
+  accent-color: var(--accent-color-dark);
 }
 
 th {
@@ -122,4 +139,23 @@ th {
 
 td {
   overflow-wrap: anywhere;
+}
+
+.download-bar {
+  max-width: 24rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.download-bar span {
+  display: inline-block;
+  width: 3ch;
+  color: var(--accent-color-dark);
+  font-weight: bold;
+}
+
+.download-bar button {
+  flex-grow: 1;
 }
