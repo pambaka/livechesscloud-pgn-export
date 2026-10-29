@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LiveChessCloud PGN Exporter</title>
     <link rel="stylesheet" href="styles.css" />
-    <script src="main.js" defer></script>
+    <script type="module" src="main.js"></script>
   </head>
   <body>
     <form>
@@ -20,6 +20,7 @@
       </div>
       <button type="submit">Show rounds</button>
     </form>
+    <p id="tournament-status" class="status"></p>
     <div id="response" hidden>
       <div class="rounds-bar">
         <p>Round:</p>
@@ -42,6 +43,7 @@
         </div>
         <button id="pgn-button" disabled>Get PGN</button>
       </div>
+      <p id="pgn-status" class="status"></p>
     </div>
     <template id="row-template">
       <tr>

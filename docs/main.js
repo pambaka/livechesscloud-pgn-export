@@ -1,23 +1,22 @@
-const isLocal = ["127.0.0.1", "localhost"].includes(location.hostname);
-const API_BASE = isLocal
-  ? "http://127.0.0.1:8000"
-  : "https://livechesscloud-pgn-export.onrender.com";
+import {
+  form,
+  tournamentInput,
+  responseBlock,
+  roundsBlock,
+  pairsBlock,
+  rowTemplate,
+  selectAllCheckbox,
+  selectedGamesCounter,
+  pgnButton,
+  submitButton,
+  pgnStatusBlock,
+} from "./elements.js";
+
+import { ApiError, fetchPgn, fetchRounds } from "./api.js";
+import { pgnStatus, tournamentStatus } from "./status.js";
+
 let loadedTournamentId = "";
 const selectedGames = new Set();
-
-const form = document.querySelector("form");
-/** @type {HTMLInputElement} */
-const tournamentInput = document.getElementById("tournament_id");
-const responseBlock = document.getElementById("response");
-const roundsBlock = document.getElementById("rounds");
-const pairsBlock = document.getElementById("pairs");
-/** @type {HTMLTemplateElement} */
-const rowTemplate = document.getElementById("row-template");
-/** @type {HTMLInputElement} */
-const selectAllCheckbox = document.getElementById("select-all");
-const selectedGamesCounter = document.getElementById("counter");
-/** @type {HTMLButtonElement} */
-const pgnButton = document.getElementById("pgn-button");
 
 selectAllCheckbox.addEventListener("change", () => {
   const checkboxes = pairsBlock.querySelectorAll("input[type=checkbox]");
@@ -28,22 +27,33 @@ selectAllCheckbox.addEventListener("change", () => {
   }
 });
 
-function getUrl(id, path = "") {
-  return `${API_BASE}/api/tournaments/${encodeURIComponent(id)}${path}`;
-}
-
 pgnButton.addEventListener("click", async () => {
+  pgnStatus.clear();
+  setButtonLoading(pgnButton, true);
+  const keys = [...selectedGames];
+  const [roundNum, boardNum] = keys[0].split("-");
   try {
-    const keys = [...selectedGames];
-    const [roundNum, boardNum] = keys[0].split("-");
-    const response = await fetch(
-      getUrl(loadedTournamentId, `/pgn?round=${roundNum}&board=${boardNum}`),
-    );
-    const text = await response.text();
+    const text = await fetchPgn(loadedTournamentId, roundNum, boardNum);
     console.log(text);
   } catch (error) {
-    console.error(error);
-    return;
+    if (error instanceof ApiError) {
+      if (error.status === 404)
+        pgnStatus.showError(
+          `Game not found: round ${roundNum}, board ${boardNum}`,
+        );
+      else if (error.status === 429)
+        pgnStatus.showError("Too many requests, try in a minute");
+      else if (error.status === 502)
+        pgnStatus.showError("Service is unavailable");
+      else {
+        pgnStatus.showError("Something went wrong");
+        console.error(error);
+      }
+      pgnStatusBlock.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } else console.error(error);
+  } finally {
+    setButtonLoading(pgnButton, false);
+    updateSelectionState();
   }
 });
 
@@ -51,25 +61,42 @@ form.addEventListener("submit", handleSubmit);
 /** @param {SubmitEvent} event */
 async function handleSubmit(event) {
   event.preventDefault();
+  resetTournament();
+  tournamentStatus.clear();
+  pgnStatus.clear();
+  setButtonLoading(submitButton, true);
   const id = tournamentInput.value.trim();
   let roundsData;
+  const slowTimer = setTimeout(() => {
+    tournamentStatus.showInfo(
+      "Waking up the server, this may take up to a minute",
+    );
+  }, 3000);
   try {
-    const response = await fetch(getUrl(id));
-    if (!response.ok) {
-      console.error(response.status);
-      return;
-    }
-    roundsData = await response.json();
+    roundsData = await fetchRounds(id);
     loadedTournamentId = id;
   } catch (error) {
-    console.error(error);
+    if (error instanceof ApiError) {
+      if (error.status === 422)
+        tournamentStatus.showError("Incorrect tournament ID format");
+      else if (error.status === 502)
+        tournamentStatus.showError(
+          "Tournament not found or Service is unavailable",
+        );
+      else if (error.status === 429)
+        tournamentStatus.showError("Too many requests, try in a minute");
+      else {
+        tournamentStatus.showError("Something went wrong");
+        console.error(error);
+      }
+    } else console.error(error);
     return;
+  } finally {
+    setButtonLoading(submitButton, false);
+    clearTimeout(slowTimer);
   }
   responseBlock.hidden = false;
-  roundsBlock.replaceChildren();
-  pairsBlock.replaceChildren();
-  selectedGames.clear();
-  updateSelectionState();
+
   for (const [roundNum, roundPairings] of Object.entries(roundsData)) {
     const tab = document.createElement("button");
     tab.classList.add("round-tab");
@@ -145,4 +172,19 @@ function getGameKey(roundNum, boardNum) {
 function updateSelectionState() {
   pgnButton.disabled = selectedGames.size === 0;
   selectedGamesCounter.textContent = selectedGames.size;
+}
+
+function resetTournament() {
+  responseBlock.hidden = true;
+  roundsBlock.replaceChildren();
+  pairsBlock.replaceChildren();
+  selectedGames.clear();
+  loadedTournamentId = "";
+  updateSelectionState();
+}
+
+/**@param {HTMLButtonElement} button */
+function setButtonLoading(button, isLoading) {
+  button.disabled = isLoading;
+  button.textContent = isLoading ? "Loading..." : button.dataset.label;
 }
