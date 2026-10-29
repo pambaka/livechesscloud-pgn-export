@@ -1,3 +1,4 @@
+import textwrap
 from typing import Any
 
 from tournament import Pairing
@@ -20,7 +21,8 @@ class GamePGN:
         headers =  self._build_headers(pairing, round_num, board, game_result)
         moves = self._build_moves(game)
         moves_text = f"{moves} {game_result}".strip()
-        return f"{headers}\n\n{moves_text}\n"
+        wrapped_moves_text = textwrap.fill(moves_text, width=80)
+        return f"{headers}\n\n{wrapped_moves_text}\n"
 
     def _build_headers(self, pairing: Pairing, round_num: int, board: int, result: str) -> str:
         headers = {

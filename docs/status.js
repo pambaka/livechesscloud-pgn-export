@@ -22,6 +22,10 @@ class Status {
     this.#show(message);
   }
 
+  scrollTo() {
+    this.#element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   #show(message, isError = false) {
     this.#element.textContent = message;
     this.#element.classList.toggle(ERROR_CLASS, isError);

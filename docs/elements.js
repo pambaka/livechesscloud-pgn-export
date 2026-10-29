@@ -17,3 +17,6 @@ export const selectedGamesCounter = document.getElementById("counter");
 export const pgnButton = document.getElementById("pgn-button");
 pgnButton.dataset.label = pgnButton.textContent;
 export const pgnStatusBlock = document.getElementById("pgn-status");
+export const pgnBlock = document.getElementById("pgn-list");
+/** @type {HTMLTemplateElement} */
+export const pgnTemplate = document.getElementById("pgn-template");

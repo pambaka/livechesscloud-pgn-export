@@ -44,6 +44,7 @@
         <button id="pgn-button" disabled>Get PGN</button>
       </div>
       <p id="pgn-status" class="status"></p>
+      <ul id="pgn-list"></ul>
     </div>
     <template id="row-template">
       <tr>
@@ -52,6 +53,14 @@
         <td class="white"></td>
         <td class="black"></td>
       </tr>
+    </template>
+    <template id="pgn-template">
+      <li>
+        <details>
+          <summary></summary>
+          <pre></pre>
+        </details>
+      </li>
     </template>
   </body>
 </html>

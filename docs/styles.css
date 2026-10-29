@@ -29,7 +29,8 @@ p {
 form,
 .status,
 table,
-.download-bar {
+.download-bar,
+#pgn-list {
   width: 100%;
   margin: 0 auto;
 }
@@ -178,4 +179,23 @@ td {
 
 .download-bar button {
   flex-grow: 1;
+}
+
+details summary {
+  cursor: pointer;
+}
+
+#pgn-list {
+  max-width: 40rem;
+  list-style: none;
+  padding: 0;
+}
+
+#pgn-list:empty {
+  display: none;
+}
+
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }

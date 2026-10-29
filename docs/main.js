@@ -9,13 +9,14 @@ import {
   selectedGamesCounter,
   pgnButton,
   submitButton,
-  pgnStatusBlock,
 } from "./elements.js";
 
 import { ApiError, fetchPgn, fetchRounds } from "./api.js";
 import { pgnStatus, tournamentStatus } from "./status.js";
+import { pgnList } from "./pgn-list.js";
 
 let loadedTournamentId = "";
+let roundsData = null;
 const selectedGames = new Set();
 
 selectAllCheckbox.addEventListener("change", () => {
@@ -29,12 +30,14 @@ selectAllCheckbox.addEventListener("change", () => {
 
 pgnButton.addEventListener("click", async () => {
   pgnStatus.clear();
+  pgnList.clear();
   setButtonLoading(pgnButton, true);
   const keys = [...selectedGames];
   const [roundNum, boardNum] = keys[0].split("-");
   try {
     const text = await fetchPgn(loadedTournamentId, roundNum, boardNum);
-    console.log(text);
+    pgnList.addPgn(roundNum, boardNum, roundsData[roundNum][boardNum], text);
+    pgnList.scrollTo();
   } catch (error) {
     if (error instanceof ApiError) {
       if (error.status === 404)
@@ -49,7 +52,7 @@ pgnButton.addEventListener("click", async () => {
         pgnStatus.showError("Something went wrong");
         console.error(error);
       }
-      pgnStatusBlock.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      pgnStatus.scrollTo();
     } else console.error(error);
   } finally {
     setButtonLoading(pgnButton, false);
@@ -66,7 +69,6 @@ async function handleSubmit(event) {
   pgnStatus.clear();
   setButtonLoading(submitButton, true);
   const id = tournamentInput.value.trim();
-  let roundsData;
   const slowTimer = setTimeout(() => {
     tournamentStatus.showInfo(
       "Waking up the server, this may take up to a minute",
@@ -75,6 +77,7 @@ async function handleSubmit(event) {
   try {
     roundsData = await fetchRounds(id);
     loadedTournamentId = id;
+    tournamentStatus.clear();
   } catch (error) {
     if (error instanceof ApiError) {
       if (error.status === 422)
@@ -180,7 +183,9 @@ function resetTournament() {
   pairsBlock.replaceChildren();
   selectedGames.clear();
   loadedTournamentId = "";
+  roundsData = null;
   updateSelectionState();
+  pgnList.clear();
 }
 
 /**@param {HTMLButtonElement} button */
