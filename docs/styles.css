@@ -181,10 +181,6 @@ td {
   flex-grow: 1;
 }
 
-details summary {
-  cursor: pointer;
-}
-
 #pgn-list {
   max-width: 40rem;
   list-style: none;
@@ -195,7 +191,46 @@ details summary {
   display: none;
 }
 
-pre {
+summary {
+  cursor: pointer;
+  min-height: 1.5rem;
+}
+
+details summary:hover {
+  background-color: var(--row-color-hover);
+}
+
+details[open] summary {
+  background-color: var(--accent-color-light);
+}
+
+details[open] summary:hover {
+  background-color: var(--accent-color-light-hover);
+}
+
+.pgn-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.pgn-item details {
+  flex: 1;
+  min-width: 0;
+}
+
+.pgn-text {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.pgn-item button {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
 }

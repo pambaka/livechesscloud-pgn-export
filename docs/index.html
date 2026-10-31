@@ -55,11 +55,21 @@
       </tr>
     </template>
     <template id="pgn-template">
-      <li>
+      <li class="pgn-item">
         <details>
-          <summary></summary>
-          <pre></pre>
+          <summary>
+            <span class="pgn-title"></span>
+          </summary>
+          <pre class="pgn-text"></pre>
         </details>
+        <button
+          type="button"
+          class="download-button"
+          aria-label="Download PGN"
+          title="Download PGN"
+        >
+          ↓
+        </button>
       </li>
     </template>
   </body>
