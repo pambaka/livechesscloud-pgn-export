@@ -45,6 +45,7 @@
       </div>
       <p id="pgn-status" class="status"></p>
       <ul id="pgn-list"></ul>
+      <button id="download-button" disabled="true">Download all PGN</button>
     </div>
     <template id="row-template">
       <tr>
@@ -59,16 +60,39 @@
         <details>
           <summary>
             <span class="pgn-title"></span>
+            <span class="round-board"></span>
+            <span class="white"
+              ><span class="dot" role="img" aria-label="White"></span
+            ></span>
+            <span class="black"
+              ><span class="dot" role="img" aria-label="Black"></span
+            ></span>
           </summary>
           <pre class="pgn-text"></pre>
         </details>
         <button
           type="button"
-          class="download-button"
-          aria-label="Download PGN"
-          title="Download PGN"
+          class="copy-button"
+          aria-label="Copy PGN"
+          title="Copy PGN"
         >
-          ↓
+          <svg
+            class="icon-copy"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="8" y="8" width="13" height="13" rx="2" />
+            <path d="M4 16 v-10 a2 2 0 0 1 2 -2 h10" />
+            <path class="icon-check" d="M11.5 14.5 l2 2 l4 -4" />
+            <path class="icon-cross" d="M12 12 l5 5 M17 12 l-5 5" />
+          </svg>
         </button>
       </li>
     </template>
