@@ -1,16 +1,24 @@
 import sys
+import threading
+from collections import defaultdict
 from http import HTTPStatus
 from typing import Any, Self
 from uuid import UUID
 
 import requests
+from cachetools import TTLCache
 
 POOL_URL = "https://1.pool.livechesscloud.com"
 TOURNAMENT_ID_FORMAT = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
+_cache: TTLCache[str, dict[str, Any]] = TTLCache(maxsize=1000, ttl=300)
+_cache_lock = threading.Lock()
+_key_locks: defaultdict[str, threading.Lock] = defaultdict(threading.Lock)
+
 
 class LiveChessCloudException(Exception):
     pass
+
 
 class LiveChessCloudNotFound(LiveChessCloudException):
     pass
@@ -52,7 +60,26 @@ class LiveChessCloudClient:
 
     def _fetch_json(self, path: str) -> dict[str, Any]:
         url = f"{self.base_url}/{path}"
-        response = self.session.get(url, timeout=10)
+        with _cache_lock:
+            cached = _cache.get(url)
+            if cached is not None:
+                return cached
+            key_lock = _key_locks[url]
+        with key_lock:
+            with _cache_lock:
+                cached = _cache.get(url)
+                if cached is not None:
+                    return cached
+            data = self._fetch_json_uncached(url)
+            with _cache_lock:
+                _cache[url] = data
+            return data
+
+    def _fetch_json_uncached(self, url: str) -> dict[str, Any]:
+        try:
+            response = self.session.get(url, timeout=(3, 5))
+        except requests.RequestException as e:
+            raise LiveChessCloudException(f"{url}: {e}") from e
         if response.status_code == HTTPStatus.NOT_FOUND:
             raise LiveChessCloudNotFound(f"{url}: Not found")
         if response.status_code != HTTPStatus.OK:
