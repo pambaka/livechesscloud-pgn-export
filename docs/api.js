@@ -19,17 +19,13 @@ async function request(url) {
   if (!response.ok) {
     throw new ApiError(response.status);
   }
-  return response;
-}
-
-export async function fetchRounds(tournamentId) {
-  const response = await request(getUrl(tournamentId));
   return response.json();
 }
 
-export async function fetchPgn(tournamentId, roundNum, boardNum) {
-  const response = await request(
-    getUrl(tournamentId, `/pgn?round=${roundNum}&board=${boardNum}`),
-  );
-  return response.text();
+export async function fetchRounds(tournamentId) {
+  return request(getUrl(tournamentId));
+}
+
+export async function fetchPgns(tournamentId, games) {
+  return request(getUrl(tournamentId, `/pgn?games=${[games].join(",")}`));
 }

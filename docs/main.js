@@ -11,7 +11,7 @@ import {
   submitButton,
 } from "./elements.js";
 
-import { ApiError, fetchPgn, fetchRounds } from "./api.js";
+import { ApiError, fetchPgns, fetchRounds } from "./api.js";
 import { pgnStatus, tournamentStatus } from "./status.js";
 import { pgnList } from "./pgn-list.js";
 
@@ -32,17 +32,26 @@ pgnButton.addEventListener("click", async () => {
   pgnStatus.clear();
   pgnList.clear();
   setButtonLoading(pgnButton, true);
-  const keys = [...selectedGames];
-  const [roundNum, boardNum] = keys[0].split("-");
+  const sortedGames = [...selectedGames].sort((game1, game2) => {
+    const [round1, board1] = game1.split("-").map(Number);
+    const [round2, board2] = game2.split("-").map(Number);
+    return round1 - round2 || board1 - board2;
+  });
   try {
-    const text = await fetchPgn(loadedTournamentId, roundNum, boardNum);
-    pgnList.addPgn(roundNum, boardNum, roundsData[roundNum][boardNum], text);
-    pgnList.scrollTo();
+    const { games, missing } = await fetchPgns(loadedTournamentId, sortedGames);
+    for (const game of games) {
+      pgnList.addPgn(game.round, game.board, game.pairing, game.pgn);
+    }
+    if (missing.length) {
+      pgnStatus.showError(
+        `Some games are missing (round-board): ${missing.join(", ")}`,
+      );
+    } else pgnList.scrollTo();
   } catch (error) {
     if (error instanceof ApiError) {
       if (error.status === 404)
         pgnStatus.showError(
-          `Game not found: round ${roundNum}, board ${boardNum}`,
+          `Games not found (round-board): ${sortedGames.join(", ")}`,
         );
       else if (error.status === 429)
         pgnStatus.showError("Too many requests, try in a minute");
@@ -52,7 +61,6 @@ pgnButton.addEventListener("click", async () => {
         pgnStatus.showError("Something went wrong");
         console.error(error);
       }
-      pgnStatus.scrollTo();
     } else console.error(error);
   } finally {
     setButtonLoading(pgnButton, false);

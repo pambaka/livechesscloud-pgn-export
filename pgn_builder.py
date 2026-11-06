@@ -12,19 +12,31 @@ RESULT_MAP = {
 UNKNOWN_RESULT = "*"
 
 
-class GamePGN:
+class PGNBuilder:
     def __init__(self, tournament: dict[str, Any]) -> None:
         self.tournament_name = tournament.get("name", "")
 
-    def to_pgn(self, game: dict[str, Any], pairing: Pairing, round_num: int, board: int) -> str:
-        game_result = RESULT_MAP.get(game.get("result"), UNKNOWN_RESULT)
-        headers =  self._build_headers(pairing, round_num, board, game_result)
+    def to_pgn(
+            self,
+            game: dict[str, Any],
+            pairing: Pairing,
+            round_num: int,
+            board: int
+    ) -> str:
+        game_result = RESULT_MAP.get(game.get("result", ""), UNKNOWN_RESULT)
+        headers = self._build_headers(pairing, round_num, board, game_result)
         moves = self._build_moves(game)
         moves_text = f"{moves} {game_result}".strip()
         wrapped_moves_text = textwrap.fill(moves_text, width=80)
         return f"{headers}\n\n{wrapped_moves_text}\n"
 
-    def _build_headers(self, pairing: Pairing, round_num: int, board: int, result: str) -> str:
+    def _build_headers(
+            self,
+            pairing: Pairing,
+            round_num: int,
+            board: int,
+            result: str
+    ) -> str:
         headers = {
             "Event": self.tournament_name,
             "Site": "?",
@@ -35,9 +47,10 @@ class GamePGN:
             "Result": result,
             "Board": board,
         }
-        header_str = "\n".join(f'[{key} "{value}"]' for key, value in headers.items())
+        header_str = "\n".join(
+            f'[{key} "{value}"]' for key, value in headers.items()
+        )
         return header_str
-        
 
     def _build_moves(self, game: dict[str, Any]) -> str:
         raw_moves: list[str] = game.get("moves", [])
@@ -49,4 +62,3 @@ class GamePGN:
             else:
                 pgn_moves.append(move)
         return " ".join(pgn_moves)
-

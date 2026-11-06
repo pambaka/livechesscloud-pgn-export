@@ -16,13 +16,15 @@ class Status {
 
   showError(message) {
     this.#show(message, true);
+    this.#scrollTo();
   }
 
   showInfo(message) {
     this.#show(message);
+    this.#scrollTo();
   }
 
-  scrollTo() {
+  #scrollTo() {
     this.#element.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 

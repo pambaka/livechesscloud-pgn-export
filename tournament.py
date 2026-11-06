@@ -5,6 +5,7 @@ class Pairing(TypedDict):
     white: str
     black: str
 
+
 UNKNOWN_NAME = "?"
 
 
@@ -20,7 +21,9 @@ class Tournament:
                 continue
             pairings = round_data["pairings"]
             for board in range(1, len(pairings) + 1):
-                pairings_by_round[i][board] = self.get_pairing(round_data, board)
+                pairings_by_round[i][board] = self.get_pairing(
+                    round_data, board
+                )
         return pairings_by_round
 
     @staticmethod

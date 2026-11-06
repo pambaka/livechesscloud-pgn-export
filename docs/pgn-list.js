@@ -11,13 +11,13 @@ const COPY_STATUS = Object.freeze({
 
 class PgnList {
   #element;
+  #downloadButton;
 
   /**@param {HTMLElement} element*/
   constructor(element) {
     this.#element = element;
-    document
-      .getElementById("download-button")
-      .addEventListener("click", () => {});
+    this.#downloadButton = document.getElementById("download-button");
+    this.#downloadButton.addEventListener("click", () => {});
   }
 
   clear() {
@@ -39,7 +39,10 @@ class PgnList {
   }
 
   scrollTo() {
-    this.#element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    this.#downloadButton.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   }
 }
 
@@ -60,12 +63,12 @@ async function copyPgn(event, text) {
     await navigator.clipboard.writeText(text);
     statusClass = COPY_STATUS.success;
   } catch (error) {
-      console.error("Failed to copy:", error);
-      statusClass = COPY_STATUS.failure;
+    console.error("Failed to copy:", error);
+    statusClass = COPY_STATUS.failure;
   }
   clearTimeout(timers.get(button));
   button.classList.remove(...Object.values(COPY_STATUS));
-  button.classList.add(statusClass)
+  button.classList.add(statusClass);
   timers.set(
     button,
     setTimeout(() => {

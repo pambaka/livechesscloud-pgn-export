@@ -192,6 +192,9 @@ td {
 }
 
 #pgn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   max-width: 40rem;
   list-style: none;
   padding: 0;
