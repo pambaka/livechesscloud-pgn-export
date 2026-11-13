@@ -7,13 +7,12 @@ import {
   rowTemplate,
   selectAllCheckbox,
   selectedGamesCounter,
-  pgnButton,
-  submitButton,
 } from "./elements.js";
 
 import { ApiError, fetchPgns, fetchRounds } from "./api.js";
 import { pgnStatus, tournamentStatus } from "./status.js";
 import { pgnList } from "./pgn-list.js";
+import { pgnButton, submitButton } from "./stateful-button.js";
 
 let loadedTournamentId = "";
 let roundsData = null;
@@ -28,10 +27,10 @@ selectAllCheckbox.addEventListener("change", () => {
   }
 });
 
-pgnButton.addEventListener("click", async () => {
+pgnButton.onClick(async () => {
   pgnStatus.clear();
   pgnList.clear();
-  setButtonLoading(pgnButton, true);
+  pgnButton.setLoading(true);
   const sortedGames = [...selectedGames].sort((game1, game2) => {
     const [round1, board1] = game1.split("-").map(Number);
     const [round2, board2] = game2.split("-").map(Number);
@@ -63,7 +62,7 @@ pgnButton.addEventListener("click", async () => {
       }
     } else console.error(error);
   } finally {
-    setButtonLoading(pgnButton, false);
+    pgnButton.setLoading(false);
     updateSelectionState();
   }
 });
@@ -75,7 +74,7 @@ async function handleSubmit(event) {
   resetTournament();
   tournamentStatus.clear();
   pgnStatus.clear();
-  setButtonLoading(submitButton, true);
+  submitButton.setLoading(true);
   const id = tournamentInput.value.trim();
   const slowTimer = setTimeout(() => {
     tournamentStatus.showInfo(
@@ -103,7 +102,7 @@ async function handleSubmit(event) {
     } else console.error(error);
     return;
   } finally {
-    setButtonLoading(submitButton, false);
+    submitButton.setLoading(false);
     clearTimeout(slowTimer);
   }
   responseBlock.hidden = false;
@@ -181,7 +180,7 @@ function getGameKey(roundNum, boardNum) {
 }
 
 function updateSelectionState() {
-  pgnButton.disabled = selectedGames.size === 0;
+  pgnButton.setDisabledBy("noSelectedGames", selectedGames.size === 0);
   selectedGamesCounter.textContent = selectedGames.size;
 }
 
@@ -194,10 +193,4 @@ function resetTournament() {
   roundsData = null;
   updateSelectionState();
   pgnList.clear();
-}
-
-/**@param {HTMLButtonElement} button */
-function setButtonLoading(button, isLoading) {
-  button.disabled = isLoading;
-  button.textContent = isLoading ? "Loading..." : button.dataset.label;
 }
