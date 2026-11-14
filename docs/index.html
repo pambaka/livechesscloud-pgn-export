@@ -45,7 +45,17 @@
       </div>
       <p id="pgn-status" class="status"></p>
       <ul id="pgn-list"></ul>
-      <button id="download-button" disabled="true">Download all PGN</button>
+      <fieldset class="download">
+        <label
+          ><input type="radio" name="format" value="pgn" checked />Single PGN
+          file</label
+        >
+        <label
+          ><input type="radio" name="format" value="zip" disabled />Separate PGN
+          files (ZIP)</label
+        >
+        <button id="download-button">Download all PGN</button>
+      </fieldset>
     </div>
     <template id="row-template">
       <tr>

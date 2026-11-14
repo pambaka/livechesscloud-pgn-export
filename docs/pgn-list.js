@@ -12,16 +12,21 @@ const COPY_STATUS = Object.freeze({
 class PgnList {
   #element;
   #downloadButton;
+  #games = [];
 
   /**@param {HTMLElement} element*/
   constructor(element) {
     this.#element = element;
     this.#downloadButton = document.getElementById("download-button");
-    this.#downloadButton.addEventListener("click", () => {});
+    this.#downloadButton.addEventListener("click", () => {
+      downloadAsPgn(this.#games);
+    });
+    this.#downloadButton.disabled = false;
   }
 
   clear() {
     this.#element.replaceChildren();
+    this.#games = [];
   }
 
   addPgn(roundNum, boardNum, pairing, text) {
@@ -32,6 +37,7 @@ class PgnList {
     pgnItem.querySelector(".white").append(pairing.white);
     pgnItem.querySelector(".black").append(pairing.black);
     pgnItem.querySelector(".pgn-text").textContent = text;
+    this.#games.push(text);
     /**@type {HTMLButtonElement} */
     const copyButton = pgnItem.querySelector(".copy-button");
     copyButton.addEventListener("click", (event) => copyPgn(event, text));
@@ -77,14 +83,20 @@ async function copyPgn(event, text) {
   );
 }
 
-// function downloadPgn(text, filename) {
-//   const blob = new Blob([text], { type: "application/x-chess-pgn" });
-//   const url = URL.createObjectURL(blob);
-//   const link = document.createElement("a");
-//   link.href = url;
-//   link.download = filename;
-//   link.click();
-//   URL.revokeObjectURL(url);
-// }
+function download(data, filename, type) {
+  const blob = new Blob([data], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadAsPgn(games) {
+  download(games.join("\n"), "games.pgn", "application/x-chess-pgn");
+}
+
+// function downloadAsZip() {}
 
 export const pgnList = new PgnList(pgnBlock);

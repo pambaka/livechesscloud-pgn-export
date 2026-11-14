@@ -36,12 +36,17 @@ p {
   margin: 0;
 }
 
+fieldset {
+  border: none;
+  padding: 0;
+}
+
 form,
 .status,
 table,
 .download-bar,
 #pgn-list,
-#download-button {
+.download {
   width: 100%;
   margin: 0 auto;
 }
@@ -159,9 +164,13 @@ tbody tr:has(input:checked):hover {
   background-color: var(--accent-color-light-hover);
 }
 
-input[type="checkbox"] {
+input:is([type="checkbox"], [type="radio"]) {
   cursor: pointer;
   accent-color: var(--accent-color-dark);
+}
+
+input:disabled {
+  cursor: default;
 }
 
 th {
@@ -204,13 +213,23 @@ td {
   display: none;
 }
 
-#download-button {
+.download {
   display: none;
+  flex-direction: column;
+  gap: 0.5rem;
   max-width: 24rem;
 }
 
-#pgn-list:not(:empty) + #download-button {
-  display: block;
+#pgn-list:not(:empty) + .download {
+  display: flex;
+}
+
+.download label {
+  cursor: pointer;
+}
+
+.download label:has(input:disabled) {
+  cursor: default;
 }
 
 summary {
