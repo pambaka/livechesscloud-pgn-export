@@ -181,6 +181,10 @@ td {
   overflow-wrap: anywhere;
 }
 
+td.result {
+  text-align: center;
+}
+
 .download-bar {
   max-width: 24rem;
   display: flex;

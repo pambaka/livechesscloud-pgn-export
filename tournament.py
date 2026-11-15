@@ -4,6 +4,7 @@ from typing import Any, TypedDict
 class Pairing(TypedDict):
     white: str
     black: str
+    result: str
 
 
 UNKNOWN_NAME = "?"
@@ -32,6 +33,7 @@ class Tournament:
         return {
             "white": Tournament._get_full_name(pairing["white"]),
             "black": Tournament._get_full_name(pairing["black"]),
+            "result": pairing["result"]
         }
 
     @staticmethod

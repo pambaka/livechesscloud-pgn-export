@@ -148,6 +148,10 @@ function createTableRow(roundNum, boardNum, pairing) {
   row.querySelector("th").textContent = boardNum;
   row.querySelector(".white").textContent = pairing["white"];
   row.querySelector(".black").textContent = pairing["black"];
+  row.querySelector(".result").textContent = pairing["result"].replaceAll(
+    "1/2",
+    "½",
+  );
   const checkbox = row.querySelector("input");
   checkbox.checked = selectedGames.has(getGameKey(roundNum, boardNum));
   checkbox.addEventListener("change", () => {
