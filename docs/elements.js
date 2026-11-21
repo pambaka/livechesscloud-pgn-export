@@ -1,3 +1,4 @@
+export const introBlock = document.getElementById("intro");
 export const form = document.getElementById("tournament-form");
 /** @type {HTMLInputElement} */
 export const tournamentInput = document.getElementById("tournament-id");

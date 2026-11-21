@@ -9,6 +9,7 @@ import {
   selectedGamesCounter,
   searchBar,
   searchInput,
+  introBlock,
 } from "./elements.js";
 
 import { ApiError, fetchPgns, fetchRounds } from "./api.js";
@@ -91,6 +92,7 @@ async function handleSubmit(event) {
     roundsData = await fetchRounds(id);
     loadedTournamentId = id;
     tournamentStatus.clear();
+    introBlock.hidden = true;
   } catch (error) {
     if (error instanceof ApiError) {
       if (error.status === 422)

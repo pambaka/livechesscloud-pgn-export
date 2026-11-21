@@ -3,11 +3,44 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LiveChessCloud PGN Exporter</title>
+    <title>LiveChessCloud PGN Exporter - export tournament games to PGN</title>
+    <meta
+      name="description"
+      content="Free online tool to export LiveChessCloud chess tournament games to PGN: pick rounds and boards, find a player's games, copy or download them."
+    />
+    <link
+      rel="canonical"
+      href="https://pambaka.github.io/livechesscloud-pgn-export/"
+    />
+    <meta
+      name="google-site-verification"
+      content="IASBuLivBtDBUTln3GxCTSgySzSjS7skk-0KHKtjW84"
+    />
     <link rel="stylesheet" href="styles.css" />
     <script type="module" src="main.js"></script>
   </head>
   <body>
+    <header>
+      <h1>LiveChessCloud PGN Exporter</h1>
+      <div id="intro" class="intro">
+        <div class="features-block">
+          <p>Export LiveChessCloud chess tournament games to&nbsp;PGN:</p>
+          <ul class="features">
+            <li>pick rounds and boards</li>
+            <li>find a player's games</li>
+            <li>copy or download them</li>
+          </ul>
+        </div>
+        <p>
+          Paste the tournament ID
+          <i
+            >(the part after <code>#</code> in a
+            <code>view.livechesscloud.com</code> link)</i
+          >
+          and press <b>Show rounds</b>.
+        </p>
+      </div>
+    </header>
     <form id="tournament-form" class="tournament-form">
       <div>
         <label for="tournament-id">Tournament ID:</label>
