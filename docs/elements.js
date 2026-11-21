@@ -1,11 +1,13 @@
-export const form = document.querySelector("form");
+export const form = document.getElementById("tournament-form");
 /** @type {HTMLInputElement} */
-export const tournamentInput = document.getElementById("tournament_id");
+export const tournamentInput = document.getElementById("tournament-id");
 export const submitButtonElement = form.querySelector("button");
 export const tournamentStatusBlock =
   document.getElementById("tournament-status");
 export const responseBlock = document.getElementById("response");
 export const roundsBlock = document.getElementById("rounds");
+export const searchBar = document.querySelector(".search-bar");
+export const searchInput = searchBar.querySelector("input");
 export const pairsBlock = document.getElementById("pairs");
 /** @type {HTMLTemplateElement} */
 export const rowTemplate = document.getElementById("row-template");

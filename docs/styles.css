@@ -8,6 +8,7 @@
   --row-color-hover: #f2f2f2;
   --text-color-dark: #222;
   --text-color-light: #fff;
+  --text-color-muted: #666;
   --text-color-error: #b3261e;
   --text-color-success: #1f6f3b;
 }
@@ -25,10 +26,10 @@ tr {
 body {
   padding: 0.5rem;
   padding-top: 2rem;
-  font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  font-family: system-ui, sans-serif;
   color: var(--text-color-dark);
 }
 
@@ -41,8 +42,9 @@ fieldset {
   padding: 0;
 }
 
-form,
+.tournament-form,
 .status,
+.filters-panel,
 table,
 .download-bar,
 #pgn-list,
@@ -51,17 +53,21 @@ table,
   margin: 0 auto;
 }
 
-form {
+.tournament-form {
   max-width: 24rem;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-form div {
+.tournament-form div {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.tournament-form input {
+  font-family: monospace;
 }
 
 input,
@@ -73,14 +79,12 @@ button {
 
 input {
   max-width: 100%;
-  font-family: monospace;
   box-sizing: border-box;
 }
 
 button {
   cursor: pointer;
   font: inherit;
-  text-transform: uppercase;
   transition: filter 0.2s;
 }
 
@@ -111,11 +115,35 @@ button:not(:disabled):hover {
   gap: 20px;
 }
 
+.filters-panel {
+  max-width: 40rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .filters-panel {
+    gap: 1rem;
+  }
+}
+@media (max-width: 500px) {
+  .filters-panel {
+    flex-direction: column;
+  }
+
+  .search-bar {
+    width: 24rem;
+    max-width: 100%;
+  }
+}
+
 .rounds-bar {
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 #rounds {
@@ -125,7 +153,6 @@ button:not(:disabled):hover {
 }
 
 .round-tab {
-  border-radius: 0;
   min-width: 2rem;
   min-height: 2rem;
   padding: 0.2rem 0.5rem;
@@ -133,6 +160,7 @@ button:not(:disabled):hover {
   align-items: center;
   justify-content: center;
   border: none;
+  border-radius: 0;
 }
 
 .round-tab[aria-selected="true"] {
@@ -143,6 +171,28 @@ button:not(:disabled):hover {
   border-left: 1px solid var(--border-color-light);
 }
 
+.search-bar {
+  min-width: 10rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.search-bar input {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-button {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 table {
   max-width: 40rem;
 }
@@ -151,7 +201,7 @@ tr {
   transition: background-color 0.2s;
 }
 
-tbody tr:hover {
+tbody tr:not(.round-separator):hover {
   cursor: pointer;
   background-color: var(--row-color-hover);
 }
@@ -185,6 +235,10 @@ td.result {
   text-align: center;
 }
 
+.round-separator td {
+  padding-top: 0.5rem;
+}
+
 .download-bar {
   max-width: 24rem;
   display: flex;
@@ -194,10 +248,10 @@ td.result {
 }
 
 .download-bar span {
-  display: inline-block;
   width: 3ch;
-  color: var(--accent-color-dark);
+  display: inline-block;
   font-weight: bold;
+  color: var(--accent-color-dark);
 }
 
 .download-bar button {
@@ -205,12 +259,12 @@ td.result {
 }
 
 #pgn-list {
+  max-width: 40rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-width: 40rem;
   list-style: none;
-  padding: 0;
 }
 
 #pgn-list:empty {
@@ -218,10 +272,10 @@ td.result {
 }
 
 .download {
+  max-width: 24rem;
   display: none;
   flex-direction: column;
   gap: 0.5rem;
-  max-width: 24rem;
 }
 
 #pgn-list:not(:empty) + .download {
@@ -237,10 +291,10 @@ td.result {
 }
 
 summary {
+  padding: 10px 12px;
   display: grid;
   grid-template-columns: minmax(0, max-content) minmax(0, max-content) auto;
   gap: 0 1rem;
-  padding: 10px 12px;
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -294,12 +348,14 @@ summary .black {
   border-radius: 11px;
 }
 
-.round-board {
+.round-board,
+.round-separator span {
   width: fit-content;
   padding: 2px 6px;
   margin-bottom: 4px;
   border-radius: 5px;
   background-color: #efefef;
+  color: var(--text-color-muted);
   font-size: 0.7rem;
 }
 

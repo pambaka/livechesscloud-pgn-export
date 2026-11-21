@@ -8,11 +8,11 @@
     <script type="module" src="main.js"></script>
   </head>
   <body>
-    <form>
+    <form id="tournament-form" class="tournament-form">
       <div>
-        <label for="tournament_id">Tournament ID:</label>
+        <label for="tournament-id">Tournament ID:</label>
         <input
-          id="tournament_id"
+          id="tournament-id"
           type="text"
           placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           required
@@ -22,9 +22,31 @@
     </form>
     <p id="tournament-status" class="status"></p>
     <div id="response" hidden>
-      <div class="rounds-bar">
-        <p>Round:</p>
-        <div id="rounds"></div>
+      <div class="filters-panel">
+        <div class="rounds-bar">
+          <p>Round:</p>
+          <div id="rounds"></div>
+        </div>
+        <form class="search-bar" role="search">
+          <input placeholder="Search player" aria-label="Search player" />
+          <button type="submit" class="search-button" aria-label="Search">
+            <svg
+              class="icon-search"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="M16 16 L21 21" />
+            </svg>
+          </button>
+        </form>
       </div>
       <table>
         <thead>
@@ -42,7 +64,7 @@
         <div>
           <p>Selected: <span id="counter">0</span></p>
         </div>
-        <button id="pgn-button" disabled>Get PGN</button>
+        <button id="pgn-button" disabled>Get PGNs</button>
       </div>
       <p id="pgn-status" class="status"></p>
       <ul id="pgn-list"></ul>
@@ -55,7 +77,7 @@
           ><input type="radio" name="format" value="zip" disabled />Separate PGN
           files (ZIP)</label
         >
-        <button id="download-button">Download all PGN</button>
+        <button id="download-button">Download all PGNs</button>
       </fieldset>
     </div>
     <template id="row-template">
