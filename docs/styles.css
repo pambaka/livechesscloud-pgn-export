@@ -23,23 +23,26 @@ tr {
   -webkit-tap-highlight-color: transparent;
 }
 
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+body,
+p {
+  margin: 0;
+}
+
 body {
-  padding: 0.5rem;
-  padding-top: 2rem;
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: 2rem 0.5rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 40px;
   font-family: system-ui, sans-serif;
   color: var(--text-color-dark);
-}
-
-p {
-  margin: 0;
-}
-
-fieldset {
-  border: none;
-  padding: 0;
 }
 
 header,
@@ -49,7 +52,8 @@ header,
 table,
 .download-bar,
 #pgn-list,
-.download {
+.download,
+footer {
   width: 100%;
   margin: 0 auto;
 }
@@ -491,4 +495,16 @@ summary .black {
 
 .pgn-item .copy-button.copy-failure svg {
   color: var(--text-color-error);
+}
+
+footer {
+  max-width: 24rem;
+  margin-top: auto;
+  font-size: 0.8rem;
+  color: var(--text-color-muted);
+  text-align: center;
+}
+
+footer a {
+  color: var(--accent-color-dark);
 }
