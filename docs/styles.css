@@ -351,13 +351,19 @@ td.result {
 }
 
 summary {
-  padding: 10px 12px;
+  padding: 10px 10px 10px 12px;
   display: grid;
-  grid-template-columns: minmax(0, max-content) minmax(0, max-content) auto;
+  grid-template-columns:
+    max-content minmax(0, max-content) minmax(0, max-content)
+    auto;
   gap: 0 1rem;
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+summary::-webkit-details-marker {
+  display: none;
 }
 
 details summary:hover {
@@ -373,19 +379,37 @@ details[open] summary:hover {
   background-color: var(--accent-color-light-hover);
 }
 
-summary .round-board {
+summary:hover .arrow {
+  color: var(--accent-color-dark);
+}
+
+summary .arrow {
   grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: center;
+  color: var(--text-color-muted);
+  transition:
+    transform 0.2s,
+    color 0.2s;
+}
+
+summary .round-board {
+  grid-column: 2;
   grid-row: 1;
 }
 
 summary .white {
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 2;
 }
 
 summary .black {
-  grid-column: 2;
+  grid-column: 3;
   grid-row: 2;
+}
+
+details[open] summary .arrow {
+  transform: rotate(90deg);
 }
 
 @media (max-width: 500px) {
@@ -393,9 +417,24 @@ summary .black {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
+  summary .round-board,
+  summary .white {
+    grid-column: 1;
+  }
+
   summary .black {
     grid-column: 1;
     grid-row: 3;
+  }
+
+  summary .arrow {
+    grid-column: 2;
+    grid-row: 3;
+    transform: rotate(90deg);
+  }
+
+  details[open] summary .arrow {
+    transform: rotate(-90deg);
   }
 }
 
